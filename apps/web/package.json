@@ -1,30 +1,37 @@
 {
   "name": "web",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3000",
+    "dev:wss": "cross-env PORT=3001 tsx watch src/server/wssDevServer.ts --tsconfig tsconfig.server.json ",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^13.4.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "ui": "workspace:*"
+    "@clerk/nextjs": "^4.23.3",
+    "@hookform/resolvers": "^3.3.0",
+    "@prisma/client": "^5.2.0",
+    "@types/ws": "^8.5.5",
+    "autoprefixer": "10.4.15",
+    "cross-env": "^7.0.3",
+    "eslint": "8.48.0",
+    "eslint-config-next": "13.4.19",
+    "next": "13.4.19",
+    "postcss": "8.4.28",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.45.4",
+    "tailwindcss": "3.3.3",
+    "tsx": "^3.12.7",
+    "typescript": "5.2.2",
+    "ws": "^8.13.0",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.4.19",
-    "@types/node": "^18.11.17",
-    "@types/react": "^18.2.5",
-    "@types/react-dom": "^18.2.4",
-    "autoprefixer": "^10.4.13",
-    "eslint-config-custom": "workspace:*",
-    "postcss": "^8.4.20",
-    "tailwind-config": "workspace:*",
-    "tailwindcss": "^3.2.4",
-    "tsconfig": "workspace:*",
-    "typescript": "^5.1.6"
+    "@types/node": "20.5.6",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7"
   }
 }
