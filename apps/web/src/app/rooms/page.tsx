@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma from "~/lib/prisma";
 
 export default async function Room() {
   const rooms = await prisma.room.findMany({ include: { users: true } });
