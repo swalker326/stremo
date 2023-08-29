@@ -1,0 +1,42 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "",
+    "exports": {
+      ".": "./src/index.ts",
+      "./types": "./src/types.ts"
+    },
+    "typesVersions": {
+      "*": {
+        "*": [
+          "./src/index.ts"
+        ],
+        "types": [
+          "./src/types.ts"
+        ]
+      }
+    },
+  "scripts": {
+    "db:format": "dotenv -e ../../.env.global prisma format",
+    "db:generate": "dotenv -e ../../.env.global prisma generate",
+    "db:push": "dotenv -e ../../.env.global prisma db push",
+    "db:reset": "dotenv -e ../../.env.global prisma db push -- --force-reset",
+    "db:seed": "dotenv -e ../../.env.global tsx ./seed/index.ts",
+    "db:studio": "dotenv -e ../../.env.global prisma studio"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.11",
+    "dotenv-cli": "^7.2.1",
+    "eslint": "^8.42.0",
+    "prisma": "^5.0.0",
+    "tsup": "5.12.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.3"
+  }
+}

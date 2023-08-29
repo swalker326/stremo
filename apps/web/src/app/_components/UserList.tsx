@@ -1,8 +1,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@prisma/client";
+import { type User } from "db/types";
 import { useForm, SubmitHandler, Form } from "react-hook-form";
 import { z } from "zod";
+import { createUser } from "~/app/app.actions";
 
 const schema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -14,13 +15,7 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-export default function UserList({
-  users,
-  addUser
-}: {
-  users: User[];
-  addUser: (data: Omit<User, "id">) => Promise<User>;
-}) {
+export default function UserList({ users }: { users: User[] }) {
   const {
     register,
     handleSubmit,
@@ -34,7 +29,7 @@ export default function UserList({
     }
   });
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    addUser({ ...data, roomId: null });
+    createUser({ ...data, roomId: null });
   };
   const FormInput = ({
     field
