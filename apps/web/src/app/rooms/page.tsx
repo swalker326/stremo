@@ -1,20 +1,27 @@
-import prisma from "~/lib/prisma";
+"use client";
+import { useAuth, useClerk } from "@clerk/nextjs";
+import { io } from "socket.io-client";
+import { CreateRoomPayload } from "ws-server";
 
-export default async function Room() {
-  const rooms = await prisma.room.findMany({ include: { users: true } });
+export default function Room() {
+  const socket = io("ws://localhost:5000");
+  const user = useAuth();
+  if (!user.userId) {
+    return <div>You have to login to do that</div>;
+  }
   return (
     <div>
       <h1>Rooms</h1>
-      {rooms?.map((room) => (
-        <div key={room.id}>
-          <h2>{room.name}</h2>
-          {room.users?.map((user) => (
-            <div key={user.id}>
-              <h2>{user.email}</h2>
-            </div>
-          ))}
-        </div>
-      ))}
+      <button
+        onClick={() => {
+          socket.emit("create-room", {
+            userId: user.userId,
+            name: "first room, yay"
+          } satisfies CreateRoomPayload);
+        }}
+      >
+        Create Room
+      </button>
     </div>
   );
 }

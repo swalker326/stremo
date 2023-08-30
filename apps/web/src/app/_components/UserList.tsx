@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type User } from "db/types";
+import Link from "next/link";
 import { useForm, SubmitHandler, Form } from "react-hook-form";
 import { z } from "zod";
 import { createUser } from "~/app/app.actions";
@@ -91,7 +92,7 @@ export default function UserList({ users }: { users: User[] }) {
                 Add Friend
               </button>
               <button className="bg-slate-200 p-2 rounded-md hover:bg-slate-300">
-                Join Room
+                <Link href="/rooms">Join Room</Link>
               </button>
             </div>
           </div>

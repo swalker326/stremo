@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       });
     }
 
-    prisma.user.create({
+    await prisma.user.create({
       data: {
         id,
         firstName: first_name,
@@ -57,6 +57,7 @@ export async function POST(req: Request) {
         email: email_addresses[0].email_address
       }
     });
+    console.log('User Created')
   }
   return new Response("", {
     status: 201
