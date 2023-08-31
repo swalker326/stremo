@@ -4,8 +4,7 @@
   "description": "",
   "exports": {
     ".": "./src/index.ts",
-    "./types": "./src/types.ts",
-    "./cjs": "./dist/index.js"
+    "./types": "./src/types.ts"
   },
   "typesVersions": {
     "*": {
