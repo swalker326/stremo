@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "React Library",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "target": "ES6",
+    "noEmit": false,
+    "module": "CommonJS",
+    "sourceMap": true
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { CreateRoomPayload } from "ws-server";
 
 export default function Room() {
-  const socket = io("http://localhost:8080/");
+  const socket = io("http://localhost:5000/");
   socket.emit("message", "hello server!");
   const user = useAuth();
   if (!user.userId) {
