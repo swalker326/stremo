@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { prisma } from "db";
+import { prisma } from "db/cjs";
 import { type User, type Room } from "db/types";
 import cors from "cors";
 

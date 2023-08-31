@@ -30,7 +30,7 @@ export default function UserList({ users }: { users: User[] }) {
     }
   });
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    createUser({ ...data, roomId: null });
+    createUser({ ...data, id:"replace_with_realThing", roomId: null });
   };
   const FormInput = ({
     field

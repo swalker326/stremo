@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "module": "NodeNext",
+    "module": "Node16",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
-    "moduleResolution": "node"
-  },
-  "ts-node": {
-    "esm": true
+    "outDir": "./dist"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

@@ -4,7 +4,8 @@ import { io } from "socket.io-client";
 import { CreateRoomPayload } from "ws-server";
 
 export default function Room() {
-  const socket = io("ws://localhost:5000");
+  const socket = io("http://localhost:8080/");
+  socket.emit("message", "hello server!");
   const user = useAuth();
   if (!user.userId) {
     return <div>You have to login to do that</div>;
@@ -14,6 +15,7 @@ export default function Room() {
       <h1>Rooms</h1>
       <button
         onClick={() => {
+          console.log("Sending 'create-room' message");
           socket.emit("create-room", {
             userId: user.userId,
             name: "first room, yay"
