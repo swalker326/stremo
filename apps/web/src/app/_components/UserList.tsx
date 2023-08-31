@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type User } from "db/types";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +16,7 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-export default function UserList({ users }: { users:any }) {
+export default function UserList({ users }: { users: User[] }) {
   const {
     register,
     handleSubmit,
@@ -73,7 +74,7 @@ export default function UserList({ users }: { users:any }) {
         </button>
       </form>
       <h2 className="my-3 text-3xl">Users</h2>
-      {users.map((user: any) => {
+      {users.map((user) => {
         return (
           <div
             key={user.id}
