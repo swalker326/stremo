@@ -5,25 +5,30 @@ import { prisma } from "db";
 import { type User, type Room } from "db/types";
 import cors from "cors";
 
+type RoomWithUsers = {
+  id: string;
+  name: string;
+  users: User[];
+};
 // ClientToServer
 export type CreateRoomPayload = {
   userId: string;
-  name?: string;
+  room: RoomWithUsers;
 };
 export type UserConnectedPayload = {
   roomId: string;
   userId: string;
 };
 
-interface ClientToServerEvents {
+export interface ClientToServerEvents {
   "user-connected": (payload: UserConnectedPayload) => Promise<void>;
   "create-room": (payload: CreateRoomPayload) => Promise<void>;
 }
 
 // ServerToClient
-export type RoomCreatedPayload = Room & { users: User[] };
+export type RoomCreatedPayload = RoomWithUsers;
 
-interface ServerToClientEvents {
+export interface ServerToClientEvents {
   "room-created": (room: RoomCreatedPayload) => void;
 }
 
@@ -40,13 +45,14 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  socket.on("create-room", async ({ userId, name }) => {
+  socket.on("create-room", async ({ userId, room }) => {
     console.log("Room Create Message Recivied");
-    console.log(typeof userId);
-    const room = await prisma.room.create({
-      data: { name: name || "", users: { connect: { id: userId } } },
-      select: { id: true, name: true, users: true }
-    });
+    socket.to(room.id).emit("room-created", { ...room });
+    // const room = await prisma.room.create({
+    //   data: { name: name || "", users: { connect: { id: userId } } },
+    //   select: { id: true, name: true, users: true }
+    // });
+
     socket.emit("room-created", room);
   });
   socket.on("user-connected", async (args) => {
@@ -67,7 +73,8 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
+// console.log("✉️ PORT", PORT);
 server.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT} ✅`);
+  console.log(`✅ Server is running on http://localhost:${PORT}`);
 });

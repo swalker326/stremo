@@ -1676,7 +1676,6 @@ packages:
       '@types/sql.js': '*'
       '@vercel/postgres': '*'
       better-sqlite3: '>=7'
-      bun-types: '*'
       knex: '*'
       kysely: '*'
       mysql2: '>=2'
@@ -1704,10 +1703,6 @@ packages:
       '@types/sql.js':
         optional: true
       '@vercel/postgres':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
         optional: true
       knex:
         optional: true

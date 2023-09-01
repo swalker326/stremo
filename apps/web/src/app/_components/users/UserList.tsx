@@ -4,7 +4,7 @@ import { type User } from "db/types";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
-import { createUser } from "~/app/app.actions";
+import { createUser } from "~/app/_components/users/app.actions";
 
 const schema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
