@@ -27,6 +27,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setSocket(() => {
+      console.log("Connecting to socket", process.env.NEXT_PUBLIC_WS_URL);
       const socket = io(process.env.NEXT_PUBLIC_WS_URL as string);
       socket.on("connect", () => {
         setIsConnected(true);
