@@ -1,20 +1,9 @@
 import { getRooms } from "./_actions/rooms.actions";
-// import { Socket, io } from "socket.io-client";
-// import {
-//   ClientToServerEvents,
-//   CreateRoomPayload,
-//   ServerToClientEvents
-// } from "ws-server";
-// import { CreateRoomButton } from "./_components/CreateRoomButton";
-// import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs";
 import { prisma } from "db";
 import { redirect } from "next/navigation";
 
 export default async function RoomsPage() {
-  // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  //   "ws://localhost:5000/"
-  //   );
   const joinRoom = async (formData: FormData) => {
     "use server";
     const userId = (await formData.get("userId")) as string;
@@ -33,6 +22,7 @@ export default async function RoomsPage() {
       include: { users: true }
     });
   };
+
   const createRoom = async (formData: FormData) => {
     "use server";
     const userId = (await formData.get("userId")) as string;
@@ -47,6 +37,7 @@ export default async function RoomsPage() {
     });
     redirect(`/rooms/${room.id}`);
   };
+
   const user = await currentUser();
 
   const rooms = await getRooms();
@@ -71,7 +62,10 @@ export default async function RoomsPage() {
             <form action={joinRoom}>
               <input type="hidden" name="userId" value={user?.id} />
               <input type="hidden" name="roomId" value={room.id} />
-              <button className="text-slate-800 rounded-md bg-orange-400 p-2" type="submit">
+              <button
+                className="text-slate-800 rounded-md bg-orange-400 p-2"
+                type="submit"
+              >
                 Join
               </button>
             </form>
@@ -87,7 +81,10 @@ export default async function RoomsPage() {
             type="text"
             name="name"
           />
-          <button className="rounded-md bg-orange-400 p-2 drop-shadow-sm" type="submit">
+          <button
+            className="rounded-md bg-orange-400 p-2 drop-shadow-sm"
+            type="submit"
+          >
             Create Room
           </button>
         </div>

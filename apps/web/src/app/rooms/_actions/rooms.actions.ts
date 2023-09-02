@@ -1,14 +1,15 @@
 "use server";
 import { prisma } from "db";
 import { revalidatePath } from "next/cache";
-import { Socket } from "socket.io-client";
-import { CreateRoomPayload } from "ws-server";
 
-export const getRoomById = (roomId: string) => {
+export const getRoomById = (roomId: string, path?: string) => {
   const room = prisma.room.findUnique({
     where: { id: roomId },
-    include: { users: true }
+    include: { users: true, messages: { include: { user: true } } }
   });
+  if (path) {
+    revalidatePath(path);
+  }
   return room;
 };
 
