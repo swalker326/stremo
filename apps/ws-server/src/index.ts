@@ -38,8 +38,8 @@ const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
-      "https://stremo-web.vercel.app/"
+      "https://stremo-web.vercel.app",
+      "http://localhost:3000"
     ],
     methods: ["GET", "POST"]
   }
