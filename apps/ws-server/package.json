@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "dotenv -e ../../.env.global -- tsx watch src/index.ts"
+    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts"
   },
   "exports": {
     ".": "./src/index.ts"

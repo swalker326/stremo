@@ -76,8 +76,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-// console.log("✉️ PORT", PORT);
-server.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
+const WS_PORT = 5000;
+server.listen(WS_PORT, () => {
+  console.log(`✅ Server is running on http://localhost:${WS_PORT}`);
 });
