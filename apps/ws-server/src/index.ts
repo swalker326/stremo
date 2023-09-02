@@ -39,7 +39,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https://stremo-([A-Za-z0-9-_]+).vercel.app/"
+      "https://stremo-web.vercel.app/"
     ],
     methods: ["GET", "POST"]
   }
