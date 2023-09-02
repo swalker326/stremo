@@ -37,7 +37,7 @@ app.use(cors);
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust this if your client runs on a different port
+    origin: "http://localhost:3000 https://stremo-web.vercel.app",
     methods: ["GET", "POST"]
   }
 });

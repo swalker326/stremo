@@ -2,7 +2,7 @@ name: Fly Deploy
 on:
   push:
     branches:
-      - task/web-socket-server-config
+      - main
 jobs:
   deploy:
     name: Deploy app
