@@ -29,7 +29,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setSocket(() => {
-      const socket = io("ws://localhost:5000/");
+      const socket = io(process.env.WS_SERVER_URL as string);
       socket.on("connect", () => {
         setIsConnected(true);
       });
