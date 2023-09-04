@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SocketProvider } from "./_components/socketProvider";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { ConnectionIndicator } from "./_components/ConnectionIndicator";
+import { Sidebar } from "./_components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,19 +26,12 @@ export default function RootLayout({
           <body
             className={`${inter.className} h-[calc(100vh-32px)] bg-slate-200`}
           >
-            <div className="flex flex-col w-full h-full">
-              <div className="flex bg-slate-800 h-24 items-center justify-between px-3 text-slate-100">
-                <Link href="/">
-                  <Image src="/logo.png" width={100} height={100} alt="logo" />
-                </Link>
-                <div className="flex flex-col justify-end items-center h-full">
-                  <div className="min-w-20">
-                    <UserButton />
-                  </div>
-                  <ConnectionIndicator />
-                </div>
+            <div className="flex flex-col w-full h-screen relative">
+              <div className="border flex items-center gap-2 bg-white py-2">
+                <Sidebar />
+                <Image src={"/logo.png"} width={50} height={50} alt="logo" />
               </div>
-              <div className="px-3 pt-2 h-full">{children}</div>
+              <div className="px-3 pt-2 h-screen">{children}</div>
             </div>
           </body>
         </html>

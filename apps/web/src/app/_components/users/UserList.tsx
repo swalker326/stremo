@@ -18,7 +18,7 @@ function Username({ user }: { user: User }) {
 
 export default function UserList({ users }: { users: User[] }) {
   return (
-    <div className="flex flex-col shadow-sm h-full w-full bg-slate-100 rounded-md border border-black">
+    <div className="flex flex-col shadow-sm h-full w-full bg-slate-200 shadow-slate-500">
       <h2 className="my-1 text-2xl pl-3">Users</h2>
       {users.map((user) => (
         <Username key={user.id} user={user} />
