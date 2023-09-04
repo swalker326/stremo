@@ -17,12 +17,12 @@
     }
   },
   "scripts": {
-    "db:format": "dotenv -e ../../.env.global prisma format",
-    "db:generate": "dotenv -e ../../.env.global prisma generate",
-    "db:push": "dotenv -e ../../.env.global prisma db push",
-    "db:reset": "dotenv -e ../../.env.global prisma db push -- --force-reset",
-    "db:seed": "dotenv -e ../../.env.global tsx ./seed/index.ts",
-    "db:studio": "dotenv -e ../../.env.global prisma studio"
+    "db:format": "dotenv -e ../../.env prisma format",
+    "db:generate": "dotenv -e ../../.env prisma generate",
+    "db:push": "dotenv -e ../../.env prisma db push",
+    "db:reset": "dotenv -e ../../.env prisma db push -- --force-reset",
+    "db:seed": "dotenv -e ../../.env tsx ./seed/index.ts",
+    "db:studio": "dotenv -e ../../.env prisma studio"
   },
   "keywords": [],
   "author": "",

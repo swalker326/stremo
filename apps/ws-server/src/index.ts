@@ -37,7 +37,10 @@ app.use(cors);
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust this if your client runs on a different port
+    origin: [
+      /https:\/\/stremo-([A-Za-z0-9-_]+).vercel.app/,
+      "http://localhost:3000"
+    ],
     methods: ["GET", "POST"]
   }
 });
@@ -73,8 +76,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-// console.log("✉️ PORT", PORT);
-server.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
+const WS_PORT = 5000;
+server.listen(WS_PORT, () => {
+  console.log(`✅ Server is running on http://localhost:${WS_PORT}`);
 });

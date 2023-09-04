@@ -9,7 +9,8 @@
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "turbo db:generate",
-    "db:studio": "turbo db:studio"
+    "db:studio": "turbo db:studio",
+    "db:push": "turbo db:push"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",

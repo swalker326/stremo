@@ -1,7 +1,5 @@
 "use client";
 
-//write me a context provider for a socket io instance
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "ws-server";
@@ -29,7 +27,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setSocket(() => {
-      const socket = io("ws://localhost:5000/");
+      console.log("Connecting to socket", process.env.NEXT_PUBLIC_WS_URL);
+      const socket = io(process.env.NEXT_PUBLIC_WS_URL as string);
       socket.on("connect", () => {
         setIsConnected(true);
       });
