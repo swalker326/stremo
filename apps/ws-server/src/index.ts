@@ -20,9 +20,19 @@ export type UserConnectedPayload = {
   userId: string;
 };
 
+export type UserDisconnectedPayload = {};
+
+export type RemoteOfferPayload = RTCSessionDescriptionInit;
+export type RemoteAnswerPayload = RTCSessionDescriptionInit;
+
 export interface ClientToServerEvents {
   "user-connected": (payload: UserConnectedPayload) => Promise<void>;
   "create-room": (payload: CreateRoomPayload) => Promise<void>;
+  "user-disconnected": (payload: UserDisconnectedPayload) => Promise<void>;
+  "receive-offer": (payload: RemoteOfferPayload) => Promise<void>;
+  "receive-answer": (payload: RemoteAnswerPayload) => Promise<void>;
+  "send-offer": (payload: RemoteOfferPayload) => Promise<void>;
+  "send-answer": (payload: RemoteOfferPayload) => Promise<void>;
 }
 
 // ServerToClient
@@ -30,6 +40,10 @@ export type RoomCreatedPayload = RoomWithUsers;
 
 export interface ServerToClientEvents {
   "room-created": (room: RoomCreatedPayload) => void;
+  "user-connected": (payload: UserConnectedPayload) => Promise<void>;
+  "user-disconnected": (payload: UserDisconnectedPayload) => Promise<void>;
+  "receive-offer": (payload: RemoteOfferPayload) => Promise<void>;
+  "receive-answer": (payload: RemoteAnswerPayload) => Promise<void>;
 }
 
 const app = express();

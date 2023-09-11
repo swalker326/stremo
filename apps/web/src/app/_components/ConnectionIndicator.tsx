@@ -1,7 +1,7 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
-import { useSocket } from "./socketProvider";
+import { useSocket } from "./providers/socketProvider";
 import Image from "next/image";
 import Link from "next/link";
 
