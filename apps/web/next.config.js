@@ -6,7 +6,7 @@ const nextConfig = {
     serverActions: true
   },
   images: {
-    domains: ["localhost", "img.clerk.com"]
+    domains: ["localhost", "avatars.githubusercontent.com"]
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -14,7 +14,8 @@ const nextConfig = {
     }
 
     return config;
-  }
+  },
+  transpilePackages: ["db", "auth"]
 };
 
 module.exports = nextConfig;

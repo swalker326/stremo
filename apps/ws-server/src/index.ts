@@ -1,96 +1,83 @@
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
 import { prisma } from "db";
 import { type User, type Room } from "db/types";
-import cors from "cors";
 
-type RoomWithUsers = {
-  id: string;
-  name: string;
-  users: User[];
-};
-// ClientToServer
-export type CreateRoomPayload = {
-  userId: string;
-  room: RoomWithUsers;
-};
-export type UserConnectedPayload = {
-  roomId: string;
-  userId: string;
-};
+const WS_PORT = 5000;
 
-export type UserDisconnectedPayload = {};
+type MessageType = "create-room" | "user-connected";
 
-export type RemoteOfferPayload = RTCSessionDescriptionInit;
-export type RemoteAnswerPayload = RTCSessionDescriptionInit;
-
-export interface ClientToServerEvents {
-  "user-connected": (payload: UserConnectedPayload) => Promise<void>;
-  "create-room": (payload: CreateRoomPayload) => Promise<void>;
-  "user-disconnected": (payload: UserDisconnectedPayload) => Promise<void>;
-  "receive-offer": (payload: RemoteOfferPayload) => Promise<void>;
-  "receive-answer": (payload: RemoteAnswerPayload) => Promise<void>;
-  "send-offer": (payload: RemoteOfferPayload) => Promise<void>;
-  "send-answer": (payload: RemoteOfferPayload) => Promise<void>;
+interface InboundMessageBase {
+  type: MessageType;
 }
-
-// ServerToClient
-export type RoomCreatedPayload = RoomWithUsers;
-
-export interface ServerToClientEvents {
-  "room-created": (room: RoomCreatedPayload) => void;
-  "user-connected": (payload: UserConnectedPayload) => Promise<void>;
-  "user-disconnected": (payload: UserDisconnectedPayload) => Promise<void>;
-  "receive-offer": (payload: RemoteOfferPayload) => Promise<void>;
-  "receive-answer": (payload: RemoteAnswerPayload) => Promise<void>;
+interface CreateRoomMessage extends InboundMessageBase {
+  type: "create-room";
+  payload: {
+    userId: string;
+    room: Room;
+  };
 }
+interface UserConnectedMessage extends InboundMessageBase {
+  type: "user-connected";
+  payload: {
+    roomId: string;
+    userId: string;
+  };
+}
+type Message = CreateRoomMessage | UserConnectedMessage;
+const server = Bun.serve<Message>({
+  port: WS_PORT,
+  // cors: {
+  //   origin: [
+  //     /https:\/\/stremo-([A-Za-z0-9-_]+).vercel.app/,
+  //     "http://localhost:3000"
+  //   ],
+  //   methods: ["GET", "POST"]
+  // },
+  fetch(req, server) {
+    const success = server.upgrade(req);
+    if (success) {
+      // Bun automatically returns a 101 Switching Protocols
+      // if the upgrade succeeds
+      return undefined;
+    }
 
-const app = express();
-app.use(cors);
-const server = http.createServer(app);
-const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
-  cors: {
-    origin: [
-      /https:\/\/stremo-([A-Za-z0-9-_]+).vercel.app/,
-      "http://localhost:3000"
-    ],
-    methods: ["GET", "POST"]
+    // handle HTTP request normally
+    return new Response("Hello world!");
+  },
+  websocket: {
+    open(ws) {
+      console.log("A user connected");
+    },
+    // this is called when a message is received
+    async message(ws, message) {
+      switch (ws.data.type) {
+        case "create-room": {
+          const { room } = ws.data.payload;
+          ws.send(JSON.stringify({ type: "create-room", room }));
+          break;
+        }
+        case "user-connected": {
+          const user = await prisma.user.findUnique({
+            where: { id: ws.data.payload.userId }
+          });
+          if (!user) {
+            ws.close();
+          } else {
+            const room = await prisma.room.findUnique({
+              where: { id: ws.data.payload.roomId }
+            });
+            if (room) {
+              prisma.room.update({
+                where: { id: ws.data.payload.roomId },
+                data: { users: { connect: { id: ws.data.payload.userId } } }
+              });
+            }
+          }
+        }
+      }
+      // send back a message
+      ws.send(`You said: ${message}`);
+    }
   }
 });
 
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  socket.on("create-room", async ({ userId, room }) => {
-    console.log("Room Create Message Recivied");
-    socket.to(room.id).emit("room-created", { ...room });
-    // const room = await prisma.room.create({
-    //   data: { name: name || "", users: { connect: { id: userId } } },
-    //   select: { id: true, name: true, users: true }
-    // });
-
-    socket.emit("room-created", room);
-  });
-  socket.on("user-connected", async (args) => {
-    const user = await prisma.user.findUnique({ where: { id: args.roomId } });
-    if (!user) {
-      socket.disconnect();
-    } else {
-      const room = await prisma.room.findUnique({
-        where: { id: args.roomId }
-      });
-      if (room) {
-        prisma.room.update({
-          where: { id: args.roomId },
-          data: { users: { connect: { id: args.userId } } }
-        });
-      }
-    }
-  });
-});
-
-const WS_PORT = 5000;
-server.listen(WS_PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${WS_PORT}`);
-});
+console.log(`✅ Listening on localhost:${server.port}`);

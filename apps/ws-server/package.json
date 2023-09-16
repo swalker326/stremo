@@ -4,8 +4,9 @@
   "description": "",
   "type": "commonjs",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts"
+    "start": "bun run build/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./build --minify",
+    "dev": "bun --watch run src/index.ts"
   },
   "exports": {
     ".": "./src/index.ts"

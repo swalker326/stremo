@@ -4,11 +4,12 @@ import { Popover, Transition } from "@headlessui/react";
 import { ConnectionIndicator } from "./ConnectionIndicator";
 import Image from "next/image";
 import { MouseEventHandler, MutableRefObject } from "react";
+import { signIn, useSession } from "auth/react";
 
 // headless UI is not exporting this, so we have to define it ourselves
 type MouseEvent<T> = Parameters<MouseEventHandler<T>>[0];
 
-const SidebarLink = ({
+export const SidebarLink = ({
   href,
   title,
   close
@@ -35,6 +36,9 @@ const SidebarLink = ({
 };
 
 export const Sidebar = () => {
+  const { data } = useSession();
+  if (!data) return null;
+  const { user } = data;
   return (
     <>
       <Popover>
@@ -113,8 +117,12 @@ export const Sidebar = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <ConnectionIndicator />
-                      <h3>Settings</h3>
+                      {user ? (
+                        <ConnectionIndicator />
+                      ) : (
+                        <button onClick={() => signIn()}>Login</button>
+                      )}
+                      {/* <h3>Settings</h3> */}
                     </div>
                   </div>
                 </Popover.Panel>
