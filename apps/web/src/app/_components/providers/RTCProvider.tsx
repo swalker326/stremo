@@ -31,13 +31,47 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
   const peerConnection = useRef<RTCPeerConnection | null>(null);
 
   const { socket } = useSocket();
+  console.log("socket", socket);
+  useEffect(() => {
+    if (!socket || !socket.addEventListener) return;
+    //handlers for receiving remote video stream
+    const handleRemoteOffer = async (offer: RTCSessionDescriptionInit) => {
+      if (!peerConnection?.current) throw new Error("Peer connection is null");
+      await peerConnection.current.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+      const answer = await peerConnection.current.createAnswer();
+      await peerConnection.current.setLocalDescription(answer);
+      if (!answer) throw new Error("Answer is null");
+      // Send answer back to the remote peer via the socket
+      socket.send(JSON.stringify({ type: "answer", payload: answer }));
+    };
+    const handleRemoteAnswer = async (answer: RTCSessionDescriptionInit) => {
+      if (!peerConnection?.current) throw new Error("Peer connection is null");
+      await peerConnection.current.setRemoteDescription(
+        new RTCSessionDescription(answer)
+      );
+    };
+    console.log("adding event listener");
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+      console.log("message", data);
+      if (data.type === "offer") {
+        handleRemoteOffer(data.payload);
+      }
+      if (data.type === "answer") {
+        handleRemoteAnswer(data.payload);
+      }
+    });
+  }, [socket]);
+
   const createOffer = async () => {
     if (!peerConnection.current) throw new Error("Peer connection is null");
     const offer = await peerConnection.current.createOffer();
     await peerConnection.current.setLocalDescription(offer);
     if (!offer) throw new Error("Offer is null");
     // Send offer to remote peer via the socket
-    socket.emit("send-offer", offer);
+    socket.send(JSON.stringify({ type: "offer", payload: offer }));
   };
 
   const startCapture = useCallback(async () => {
@@ -56,7 +90,7 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
   useEffect(() => {
     console.log("socket connected");
-    if (!socket?.on) return;
+    if (!socket) return;
     // Creating a new peer connection instance
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -70,7 +104,6 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     // TODO: Add other event listeners like handling ICE candidate events
-
     // Setting the state variable
     peerConnection.current = pc;
 
@@ -79,44 +112,6 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
       pc.close();
     };
   }, [socket]);
-
-  useEffect(() => {
-    if (!socket?.on) return;
-    console.log("socket connected");
-    const handleRemoteOffer = async (offer: RTCSessionDescriptionInit) => {
-      if (!peerConnection?.current) throw new Error("Peer connection is null");
-      await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(offer)
-      );
-      const answer = await peerConnection.current.createAnswer();
-      await peerConnection.current.setLocalDescription(answer);
-      if (!answer) throw new Error("Answer is null");
-      // Send answer back to the remote peer via the socket
-      socket.emit("send-answer", answer);
-    };
-
-    const handleRemoteAnswer = async (answer: RTCSessionDescriptionInit) => {
-      if (!peerConnection?.current) throw new Error("Peer connection is null");
-      await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(answer)
-      );
-    };
-    // When an offer is received
-    socket.on("receive-offer", async (offer: RTCSessionDescriptionInit) => {
-      handleRemoteOffer(offer);
-    });
-
-    // When an answer is received
-    socket.on("receive-answer", async (answer) => {
-      handleRemoteAnswer(answer);
-    });
-
-    // Cleanup listeners on unmount
-    return () => {
-      socket.off("receive-offer");
-      socket.off("receive-answer");
-    };
-  }, [socket, peerConnection]);
 
   return (
     <RTCProviderContext.Provider

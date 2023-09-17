@@ -12,7 +12,7 @@ export default function Room({ params }: { params: { roomId: string } }) {
     if (startCapture) {
       startCapture();
     }
-  }, []);
+  }, [startCapture]);
   useEffect(() => {
     console.log("localStream", localStream);
     if (!streamRef?.current) return;
