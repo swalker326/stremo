@@ -6,7 +6,7 @@ export const SocketContext = createContext<{
   isConnected: boolean;
 }>({
   socket: {} as WebSocket,
-  isConnected: false
+  isConnected: false,
 });
 
 export const useSocket = () => {

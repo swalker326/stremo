@@ -2,7 +2,7 @@
 
 export const CreateRoomButton = ({
   createRoom,
-  userId
+  userId,
 }: {
   createRoom: (userId: string) => void;
   // socket: Socket;

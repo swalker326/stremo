@@ -23,7 +23,7 @@ export default async function RoomsPage() {
     await prisma.room.update({
       where: { id: roomId },
       data: { users: { connect: { id: user.id } } },
-      include: { users: true }
+      include: { users: true },
     });
   };
 
@@ -35,7 +35,7 @@ export default async function RoomsPage() {
     }
     const room = await prisma.room.create({
       data: { name: name || "New Room", users: { connect: { id: user.id } } },
-      include: { users: true }
+      include: { users: true },
     });
     redirect(`/rooms/${room.id}`);
   };

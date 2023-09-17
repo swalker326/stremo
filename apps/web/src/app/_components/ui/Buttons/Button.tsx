@@ -2,7 +2,7 @@ import React from "react";
 
 export const Button = ({
   children,
-  className
+  className,
 }: {
   children: React.ReactNode;
   className?: string;

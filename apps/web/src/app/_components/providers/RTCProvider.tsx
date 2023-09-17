@@ -5,7 +5,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useCallback
+  useCallback,
 } from "react";
 import { useSocket } from "./socketProvider";
 
@@ -38,7 +38,7 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
     const handleRemoteOffer = async (offer: RTCSessionDescriptionInit) => {
       if (!peerConnection?.current) throw new Error("Peer connection is null");
       await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(offer)
+        new RTCSessionDescription(offer),
       );
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
@@ -49,7 +49,7 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
     const handleRemoteAnswer = async (answer: RTCSessionDescriptionInit) => {
       if (!peerConnection?.current) throw new Error("Peer connection is null");
       await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(answer)
+        new RTCSessionDescription(answer),
       );
     };
     console.log("adding event listener");
@@ -79,7 +79,7 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true
+        audio: true,
       });
       setLocalStream(stream);
       console.log("set local stream", stream);
@@ -94,8 +94,8 @@ const RTCProvider = ({ children }: { children: React.ReactNode }) => {
     // Creating a new peer connection instance
     const pc = new RTCPeerConnection({
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" } // using Google's public STUN server
-      ]
+        { urls: "stun:stun.l.google.com:19302" }, // using Google's public STUN server
+      ],
     });
 
     // Handle tracks: when a remote user adds a track to the peer connection, this will trigger

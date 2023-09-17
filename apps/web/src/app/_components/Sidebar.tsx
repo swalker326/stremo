@@ -12,7 +12,7 @@ type MouseEvent<T> = Parameters<MouseEventHandler<T>>[0];
 export const SidebarLink = ({
   href,
   title,
-  close
+  close,
 }: {
   href: string;
   title: string;
@@ -20,7 +20,7 @@ export const SidebarLink = ({
     focusableElement?:
       | HTMLElement
       | MutableRefObject<HTMLElement | null>
-      | MouseEvent<HTMLElement>
+      | MouseEvent<HTMLElement>,
   ): void;
 }) => {
   return (
