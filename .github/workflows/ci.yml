@@ -41,6 +41,7 @@ jobs:
         run: pnpm format
       # - name: Build
       #   run: pnpm build --filter=web
+      # I don't think I need to build the web app, it will build on vercel
 
       # - name: Test
       #   run: pnpm test
