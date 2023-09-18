@@ -40,7 +40,7 @@ jobs:
       - name: Format
         run: pnpm format
       - name: Build
-        run: pnpm build
+        run: pnpm build --filter=web
 
       # - name: Test
       #   run: pnpm test
