@@ -37,8 +37,6 @@ export const SidebarLink = ({
 
 export const Sidebar = () => {
   const { data } = useSession();
-  if (!data) return null;
-  const { user } = data;
   return (
     <>
       <Popover>
@@ -117,7 +115,7 @@ export const Sidebar = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {user ? (
+                      {data?.user ? (
                         <ConnectionIndicator />
                       ) : (
                         <button onClick={() => signIn()}>Login</button>

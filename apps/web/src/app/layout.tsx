@@ -8,7 +8,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Web RTC Video Chat",
+  title: "StreamO",
 };
 
 export default function RootLayout({
