@@ -17,8 +17,9 @@ RUN npm install -g pnpm turbo
 COPY . .
 
 # Install all dependencies
+RUN npm install -g bun
 RUN pnpm install --filter=ws-server
-RUN pnpm db:generate
+RUN pnpm run build --filter=ws-server
 
 # Run bun src/index.ts
 CMD ["pnpm", "start", "--filter=ws-server"]

@@ -3,10 +3,10 @@ const { PrismaPlugin } = require("@prisma/nextjs-monorepo-workaround-plugin");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true
+    serverActions: true,
   },
   images: {
-    domains: ["localhost", "img.clerk.com"]
+    domains: ["localhost", "avatars.githubusercontent.com"],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -14,7 +14,8 @@ const nextConfig = {
     }
 
     return config;
-  }
+  },
+  transpilePackages: ["db", "auth"],
 };
 
 module.exports = nextConfig;

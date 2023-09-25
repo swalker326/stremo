@@ -1,15 +1,19 @@
+import { getServerAuthSession } from "auth/server";
 import { getRooms } from "./_actions/rooms.actions";
-import { currentUser } from "@clerk/nextjs";
 import { prisma } from "db";
 import { redirect } from "next/navigation";
 
 export default async function RoomsPage() {
+  const data = await getServerAuthSession();
+  if (!data) {
+    return null;
+  }
+  const { user } = data;
   const joinRoom = async (formData: FormData) => {
     "use server";
-    const userId = (await formData.get("userId")) as string;
     const roomId = (await formData.get("roomId")) as string;
-    const user = await prisma.user.findUnique({ where: { id: userId } });
     const room = await prisma.room.findUnique({ where: { id: roomId } });
+    debugger;
     if (!user) {
       throw new Error("User not found");
     }
@@ -19,26 +23,22 @@ export default async function RoomsPage() {
     await prisma.room.update({
       where: { id: roomId },
       data: { users: { connect: { id: user.id } } },
-      include: { users: true }
+      include: { users: true },
     });
   };
 
   const createRoom = async (formData: FormData) => {
     "use server";
-    const userId = (await formData.get("userId")) as string;
     const name = (await formData.get("name")) as string;
-    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       throw new Error("User not found");
     }
     const room = await prisma.room.create({
       data: { name: name || "New Room", users: { connect: { id: user.id } } },
-      include: { users: true }
+      include: { users: true },
     });
     redirect(`/rooms/${room.id}`);
   };
-
-  const user = await currentUser();
 
   const rooms = await getRooms();
   return (

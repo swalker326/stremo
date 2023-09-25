@@ -6,7 +6,7 @@ function Username({ user }: { user: User }) {
     <div key={user.id} className="flex p-3 justify-between">
       <div className="flex justify-between w-full items-center">
         <div>
-          <h1>{user.userName}</h1>
+          <h1>{user.name}</h1>
         </div>
         <button className="bg-slate-200 p-2 text-slate-600 rounded-md hover:bg-slate-300">
           <Link href="/rooms">Join</Link>

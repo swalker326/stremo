@@ -1,13 +1,15 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { type NextRequest, NextResponse } from "next/server";
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
-export default authMiddleware({
-  ignoredRoutes: ["/api/trpc/[trpc]", "/"],
-  publicRoutes: ["/routes/webhook", "signin", "/signup", "/api/webhooks"]
-});
+export function middleware(req: NextRequest) {
+  if (!process.env.VERCEL_ENV) {
+    return NextResponse.next();
+  }
+  const path = req.nextUrl.pathname;
 
-export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"]
-};
+  // if path is /explore or /challenge/* and redirect to /waitlist
+  if (path === "/explore" || path.startsWith("/challenge/")) {
+    return NextResponse.redirect(new URL("/waitlist", req.url));
+  }
+
+  return NextResponse.next();
+}

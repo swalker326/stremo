@@ -1,13 +1,10 @@
 "use client";
 
-import { Socket } from "socket.io-client";
-
 export const CreateRoomButton = ({
   createRoom,
-  // socket,
-  userId
+  userId,
 }: {
-  createRoom: (socket: Socket, userId: string) => void;
+  createRoom: (userId: string) => void;
   // socket: Socket;
   userId: string;
 }) => {

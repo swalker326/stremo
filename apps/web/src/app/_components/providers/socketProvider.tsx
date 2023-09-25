@@ -1,14 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
-import { ClientToServerEvents, ServerToClientEvents } from "ws-server";
-
 export const SocketContext = createContext<{
-  socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+  socket: WebSocket;
   isConnected: boolean;
 }>({
-  socket: {} as Socket<ServerToClientEvents, ClientToServerEvents>,
+  socket: {} as WebSocket,
   isConnected: false
 });
 
@@ -20,19 +17,25 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState<
-    Socket<ServerToClientEvents, ClientToServerEvents>
-  >({} as Socket<ServerToClientEvents, ClientToServerEvents>);
+  const [socket, setSocket] = useState<WebSocket>({} as WebSocket);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     setSocket(() => {
-      console.log("Connecting to socket", process.env.NEXT_PUBLIC_WS_URL);
-      const socket = io(process.env.NEXT_PUBLIC_WS_URL as string);
-      socket.on("connect", () => {
+      const webSocket = process.env.NEXT_PUBLIC_WS_URL;
+      let scheme = "ws";
+      if (location.protocol === "https:") {
+        scheme = "wss";
+      }
+      console.log("Connecting to socket", webSocket);
+      const socket = new WebSocket(`${scheme}://${webSocket}`);
+
+      socket.addEventListener("open", () => {
+        console.log("Socket connected");
         setIsConnected(true);
       });
-      socket.on("disconnect", () => {
+      socket.addEventListener("close", () => {
+        console.log("Socket disconnected");
         setIsConnected(false);
       });
       return socket;
