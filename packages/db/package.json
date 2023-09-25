@@ -25,7 +25,7 @@
     "db:studio": "dotenv -e ../../.env prisma studio"
   },
   "keywords": [],
-  "author": "",
+  "author": "swalker.dev",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.2.0"

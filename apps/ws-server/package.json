@@ -4,7 +4,7 @@
   "description": "",
   "type": "commonjs",
   "scripts": {
-    "start": "bun run build/index.ts",
+    "start": "bun run build/index.js",
     "build": "bun build ./src/index.ts --outdir ./build --minify",
     "dev": "bun --watch run src/index.ts"
   },
@@ -13,7 +13,7 @@
   },
   "types": "./src/index.ts",
   "keywords": [],
-  "author": "",
+  "author": "swalker.dev",
   "license": "ISC",
   "packageManager": "pnpm@2.27.0",
   "dependencies": {

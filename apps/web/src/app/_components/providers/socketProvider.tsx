@@ -22,8 +22,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setSocket(() => {
-      console.log("Connecting to socket", process.env.NEXT_PUBLIC_WS_URL);
-      const socket = new WebSocket("ws://localhost:5000");
+      const webSocket = process.env.NEXT_PUBLIC_WS_URL;
+      let scheme = "ws";
+      if (location.protocol === "https:") {
+        scheme = "wss";
+      }
+      console.log("Connecting to socket", webSocket);
+      const socket = new WebSocket(`${scheme}://${webSocket}`);
 
       socket.addEventListener("open", () => {
         console.log("Socket connected");
