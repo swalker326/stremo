@@ -1,15 +1,6 @@
 import { authOptions } from "auth/server";
 import NextAuth from "auth/next-auth";
 
-const handler = NextAuth({
-  ...authOptions,
-  // pages: {
-  //   signIn: "/auth/signin",
-  //   signOut: "/auth/signout",
-  //   error: "/auth/error",
-  //   verifyRequest: "/auth/verify-request",
-  //   newUser: "/auth/new-user"
-  // }
-});
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

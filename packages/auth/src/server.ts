@@ -39,76 +39,66 @@ if (!process.env.GITHUB_SECRET) {
 const useSecureCookies = Boolean(process.env.VERCEL_URL);
 
 export const authOptions: NextAuthOptions = {
-  cookies: {
-    sessionToken: {
-      name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        domain: process.env.VERCEL_URL,
-        secure: useSecureCookies
-      }
-    }
-  },
   callbacks: {
-    redirect: ({ url, baseUrl }) => {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    },
-    session: async ({ session, user }) => {
-      // 1. State
-      // let userRoles: RoleTypes[] = [];
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id
+      }
+    })
+    // session: async ({ session, user }) => {
+    //   // 1. State
+    //   // let userRoles: RoleTypes[] = [];
 
-      // 2. If user already has roles, reduce them to a RoleTypes array.
-      // if (user.roles) {
-      //   userRoles = user.roles.reduce((acc: RoleTypes[], role) => {
-      //     acc.push(role.role);
-      //     return acc;
-      //   }, []);
-      // }
+    //   // 2. If user already has roles, reduce them to a RoleTypes array.
+    //   // if (user.roles) {
+    //   //   userRoles = user.roles.reduce((acc: RoleTypes[], role) => {
+    //   //     acc.push(role.role);
+    //   //     return acc;
+    //   //   }, []);
+    //   // }
 
-      // 3. If the current user doesn't have a USER role. Assign one.
-      // if (!userRoles.includes("USER")) {
-      //   const updatedUser = await prisma.user.update({
-      //     where: {
-      //       id: user.id
-      //     },
-      //     data: {
-      //       roles: {
-      //         connectOrCreate: {
-      //           where: {
-      //             role: "USER"
-      //           },
-      //           create: {
-      //             role: "USER"
-      //           }
-      //         }
-      //       }
-      //     },
-      //     include: {
-      //       roles: true
-      //     }
-      //   });
+    //   // 3. If the current user doesn't have a USER role. Assign one.
+    //   // if (!userRoles.includes("USER")) {
+    //   //   const updatedUser = await prisma.user.update({
+    //   //     where: {
+    //   //       id: user.id
+    //   //     },
+    //   //     data: {
+    //   //       roles: {
+    //   //         connectOrCreate: {
+    //   //           where: {
+    //   //             role: "USER"
+    //   //           },
+    //   //           create: {
+    //   //             role: "USER"
+    //   //           }
+    //   //         }
+    //   //       }
+    //   //     },
+    //   //     include: {
+    //   //       roles: true
+    //   //     }
+    //   //   });
 
-      //   userRoles = updatedUser.roles.reduce((acc: RoleTypes[], role) => {
-      //     acc.push(role.role);
-      //     return acc;
-      //   }, []);
-      // }
+    //   //   userRoles = updatedUser.roles.reduce((acc: RoleTypes[], role) => {
+    //   //     acc.push(role.role);
+    //   //     return acc;
+    //   //   }, []);
+    //   // }
 
-      console.log("Session", session);
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-          // role: userRoles,
-          createAt: user.createdAt
-        }
-      };
-    }
+    //   console.log("Session", session);
+    //   return {
+    //     ...session,
+    //     user: {
+    //       ...session.user,
+    //       id: user.id,
+    //       // role: userRoles,
+    //       createAt: user.createdAt
+    //     }
+    //   };
+    // }
   },
   adapter: PrismaAdapter(prisma),
   providers: [
