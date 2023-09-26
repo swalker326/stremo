@@ -98,6 +98,7 @@ export const authOptions: NextAuthOptions = {
       //   }, []);
       // }
 
+      console.log("Session", session);
       return {
         ...session,
         user: {
