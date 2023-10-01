@@ -53,24 +53,26 @@ model User {
 }
 
 model Server {
-  id             String           @id @default(cuid())
-  name           String
-  rooms          Room[]
-  ownerId        String
-  owner          User             @relation(fields: [ownerId], references: [id])
-  members        ServerUser[] // Users part of the server
-  streams        Stream[]
-  ServerUserRole ServerUserRole[]
+  id      String       @id @default(cuid())
+  name    String
+  public  Boolean      @default(true)
+  rooms   Room[]
+  ownerId String
+  owner   User         @relation(fields: [ownerId], references: [id])
+  members ServerUser[] // Users part of the server
+  streams Stream[]
 
   @@index([ownerId])
 }
 
 model Room {
-  id       String    @id @default(cuid())
-  name     String
-  serverId String
-  server   Server    @relation(fields: [serverId], references: [id])
-  messages Message[]
+  id          String       @id @default(cuid())
+  name        String
+  serverId    String
+  server      Server       @relation(fields: [serverId], references: [id])
+  messages    Message[]
+  serverUsers ServerUser[]
+  public      Boolean      @default(true)
 
   @@index([serverId])
 }
@@ -110,7 +112,6 @@ model ServerUserRole {
   serverId String
   user     User   @relation(fields: [userId], references: [id])
   role     Role   @relation(fields: [roleId], references: [id])
-  server   Server @relation(fields: [serverId], references: [id])
 
   @@id([userId, roleId, serverId])
   @@index([userId])
@@ -121,8 +122,10 @@ model ServerUserRole {
 model ServerUser {
   userId   String
   serverId String
-  user     User   @relation(fields: [userId], references: [id])
-  server   Server @relation(fields: [serverId], references: [id])
+  user     User    @relation(fields: [userId], references: [id])
+  server   Server  @relation(fields: [serverId], references: [id])
+  Room     Room?   @relation(fields: [roomId], references: [id])
+  roomId   String?
 
   @@id([userId, serverId])
   @@index([userId])
