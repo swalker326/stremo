@@ -9,7 +9,8 @@ export default async function Home() {
         id="right-section"
         className="self-end w-52 h-screen absolute -right-2.5 -top-2"
       >
-        {/* <UserList users={users} /> */}
+        {/* <Discover />
+        <Trending /> */}
       </div>
     </main>
   );

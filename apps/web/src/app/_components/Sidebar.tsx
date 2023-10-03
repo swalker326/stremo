@@ -1,39 +1,52 @@
 "use client";
 import Link from "next/link";
-import { Popover, Transition } from "@headlessui/react";
+import { Disclosure, Popover, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { MouseEventHandler, MutableRefObject } from "react";
+import { ChevronUpIcon } from "@heroicons/react/20/solid";
+import { useSession } from "auth/react";
+import { ServerLinkList } from "./ServerLinkList";
+import { prisma } from "db";
+import { useQuery } from "@tanstack/react-query";
+import { getServersByUserId } from "../_actions/sidebar";
 
 // headless UI is not exporting this, so we have to define it ourselves
 type MouseEvent<T> = Parameters<MouseEventHandler<T>>[0];
 
-export const SidebarLink = ({
-  href,
-  title,
-  close
-}: {
-  href: string;
-  title: string;
-  close(
-    focusableElement?:
-      | HTMLElement
-      | MutableRefObject<HTMLElement | null>
-      | MouseEvent<HTMLElement>
-  ): void;
-}) => {
-  return (
-    <Link
-      onClick={() => {
-        close();
-      }}
-      href={href}
-    >
-      <div className="w-full hover:bg-blue-500 p-1">{title}</div>
-    </Link>
-  );
-};
+// export const SidebarLink = ({
+//   href,
+//   title,
+//   close
+// }: {
+//   href: string;
+//   title: string;
+//   close(
+//     focusableElement?:
+//       | HTMLElement
+//       | MutableRefObject<HTMLElement | null>
+//       | MouseEvent<HTMLElement>
+//   ): void;
+// }) => {
+//   return (
+//     <Link
+//       onClick={() => {
+//         close();
+//       }}
+//       href={href}
+//     >
+//       <div className="flex w-full justify-between rounded-lg hover:bg-blue-500 px-4 py-2 text-left text-lg font-medium  focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
+//         {title}
+//       </div>
+//     </Link>
+//   );
+// };
 
 export const Sidebar = () => {
+  const { data } = useSession();
+  const { data: servers } = useQuery({
+    queryKey: ["user", "servers", data?.user?.id ?? null],
+    queryFn: () => getServersByUserId(data?.user?.id)
+  });
   return (
     <>
       <Popover>
@@ -102,12 +115,73 @@ export const Sidebar = () => {
                           </button>
                         </div>
                         <div className="w-full mt-4">
-                          <SidebarLink href="/" title="Home" close={close} />
-                          <SidebarLink
-                            href="/rooms"
-                            title="Rooms"
-                            close={close}
-                          />
+                          <Link
+                            href="/"
+                            className="flex w-full justify-between rounded-lg hover:bg-blue-500 px-4 py-2 text-left text-lg font-medium  focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"
+                            onClick={() => close()}
+                          >
+                            {" "}
+                            <h3>Home</h3>
+                          </Link>
+
+                          <Disclosure>
+                            {({ open }) => (
+                              <>
+                                <Disclosure.Button className="flex w-full justify-between  hover:bg-blue-500 px-4 py-2 text-left text-lg font-medium  focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
+                                  <span>Servers</span>
+                                  <ChevronUpIcon
+                                    className={`${
+                                      !open ? "rotate-180 transform" : ""
+                                    } w-8`}
+                                  />
+                                </Disclosure.Button>
+                                <Disclosure.Panel
+                                  static
+                                  className={`${
+                                    open
+                                      ? "py-2 text-sm text-gray-500 bg-blue-200 transition-all duration-200"
+                                      : ""
+                                  }`}
+                                >
+                                  <Transition
+                                    show={open}
+                                    enter="transition duration-100 ease-out"
+                                    enterFrom="transform scale-95 opacity-0"
+                                    enterTo="transform scale-100 opacity-100"
+                                    leave="transition duration-175 ease-out"
+                                    leaveFrom="transform scale-100 opacity-100"
+                                    leaveTo="transform scale-95 opacity-0"
+                                  >
+                                    <ul>
+                                      {servers
+                                        ? servers.map((server) => {
+                                            return (
+                                              <Link
+                                                key={server.id}
+                                                onClick={() => close()}
+                                                className="flex w-full justify-between rounded-lg hover:underline px-4 py-2 text-left text-lg font-medium  focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"
+                                                href={`/servers/${server.id}`}
+                                              >
+                                                {server.name}
+                                              </Link>
+                                            );
+                                          })
+                                        : null}
+                                      <li>
+                                        <Link
+                                          onClick={() => close()}
+                                          className="flex w-full justify-between rounded-lg hover:underline px-4 py-2 text-left text-lg font-medium  focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"
+                                          href="/servers"
+                                        >
+                                          New Server
+                                        </Link>
+                                      </li>
+                                    </ul>
+                                  </Transition>
+                                </Disclosure.Panel>
+                              </>
+                            )}
+                          </Disclosure>
                         </div>
                       </div>
                     </div>

@@ -7,6 +7,7 @@ export { SessionProvider, signIn, signOut } from "next-auth/react";
 interface Session extends DefaultSession {
   user: DefaultSession["user"] & {
     id: string;
+    emailVerified: boolean;
   };
 }
 
