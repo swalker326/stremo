@@ -6,21 +6,12 @@ import {
   getServersDetailsById,
   updateServerRooms
 } from "~/app/_actions/server/_server";
-import { SettingsForm } from "~/app/_components/server/SettingsForm";
-
-export const settingsSchema = z.object({
-  name: z.string().min(1, "Please enter a room name"),
-  rooms: z.array(
-    z.object({
-      name: z.string().min(1, "Please enter a room name"),
-      id: z.string().optional()
-    })
-  )
-});
+import {
+  SettingsForm,
+  SettingsSchema
+} from "~/app/_components/server/SettingsForm";
 
 type SettingsProps = { params: { serverId: string } };
-
-export type SettingsSchema = z.infer<typeof settingsSchema>;
 
 export default function ServerSettings({
   params: { serverId }

@@ -2,10 +2,18 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  SettingsSchema,
-  settingsSchema
-} from "../../servers/[serverId]/settings/page";
+import { z } from "zod";
+
+export const settingsSchema = z.object({
+  name: z.string().min(1, "Please enter a room name"),
+  rooms: z.array(
+    z.object({
+      name: z.string().min(1, "Please enter a room name"),
+      id: z.string().optional()
+    })
+  )
+});
+export type SettingsSchema = z.infer<typeof settingsSchema>;
 
 export const SettingsForm = ({
   data,
