@@ -17,9 +17,9 @@ model Account {
   provider                 String
   providerAccountId        String
   refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
   access_token             String? @db.Text
   expires_at               Int?
-  refresh_token_expires_in Int?
   token_type               String?
   scope                    String?
   id_token                 String? @db.Text
@@ -28,7 +28,6 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
 }
 
 model Session {
@@ -37,61 +36,98 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+  id            String           @id @default(cuid())
+  name          String
+  email         String           @unique
+  emailVerified DateTime?        @map("email_verified")
   image         String?
   accounts      Account[]
   sessions      Session[]
-  roomId        String?
-  Room          Room?     @relation(fields: [roomId], references: [id])
-  Messages      Message[]
-  roles         Role[]
-  roleId        String?
-
-  @@index([roomId])
+  servers       ServerUser[] // Servers the user is part of
+  ownedServers  Server[] // Servers the user owns
+  messages      Message[]
+  roles         ServerUserRole[] // Roles in different servers
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Server {
+  id      String       @id @default(cuid())
+  name    String
+  public  Boolean      @default(true)
+  rooms   Room[]
+  ownerId String
+  owner   User         @relation(fields: [ownerId], references: [id])
+  members ServerUser[] // Users part of the server
+  streams Stream[]
 
-  @@unique([identifier, token])
-}
-
-model Role {
-  id          String @id @default(cuid())
-  name        String @unique
-  description String @default("")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users User[]
+  @@index([ownerId])
 }
 
 model Room {
-  id       String    @id @default(uuid())
-  name     String
-  users    User[]
-  messages Message[]
+  id          String       @id @default(cuid())
+  name        String
+  serverId    String
+  server      Server       @relation(fields: [serverId], references: [id])
+  messages    Message[]
+  serverUsers ServerUser[]
+  public      Boolean      @default(true)
+
+  @@index([serverId])
 }
 
 model Message {
-  id      Int    @id @default(autoincrement())
-  message String
-  room    Room   @relation(fields: [roomId], references: [id])
-  roomId  String
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
+  id        String   @id @default(cuid())
+  message   String
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([roomId])
   @@index([userId])
+  @@index([roomId])
+}
+
+model Stream {
+  id       String @id @default(cuid())
+  title    String
+  serverId String
+  server   Server @relation(fields: [serverId], references: [id])
+
+  @@index([serverId])
+}
+
+model Role {
+  id    String           @id @default(cuid())
+  name  String           @unique
+  users ServerUserRole[] // Users assigned this role
+}
+
+model ServerUserRole {
+  userId   String
+  roleId   String
+  serverId String
+  user     User   @relation(fields: [userId], references: [id])
+  role     Role   @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId, serverId])
+  @@index([userId])
+  @@index([roleId])
+  @@index([serverId])
+}
+
+model ServerUser {
+  userId   String
+  serverId String
+  user     User    @relation(fields: [userId], references: [id])
+  server   Server  @relation(fields: [serverId], references: [id])
+  Room     Room?   @relation(fields: [roomId], references: [id])
+  roomId   String?
+
+  @@id([userId, serverId])
+  @@index([userId])
+  @@index([serverId])
 }

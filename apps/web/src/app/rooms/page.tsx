@@ -9,36 +9,36 @@ export default async function RoomsPage() {
     return null;
   }
   const { user } = data;
-  const joinRoom = async (formData: FormData) => {
-    "use server";
-    const roomId = (await formData.get("roomId")) as string;
-    const room = await prisma.room.findUnique({ where: { id: roomId } });
-    debugger;
-    if (!user) {
-      throw new Error("User not found");
-    }
-    if (!room) {
-      throw new Error("Room not found");
-    }
-    await prisma.room.update({
-      where: { id: roomId },
-      data: { users: { connect: { id: user.id } } },
-      include: { users: true },
-    });
-  };
+  // const joinRoom = async (formData: FormData) => {
+  //   "use server";
+  //   const roomId = (await formData.get("roomId")) as string;
+  //   const room = await prisma.room.findUnique({ where: { id: roomId } });
+  //   debugger;
+  //   if (!user) {
+  //     throw new Error("User not found");
+  //   }
+  //   if (!room) {
+  //     throw new Error("Room not found");
+  //   }
+  //   await prisma.room.update({
+  //     where: { id: roomId },
+  //     data: { users: { connect: { id: user.id } } },
+  //     include: { users: true }
+  //   });
+  // };
 
-  const createRoom = async (formData: FormData) => {
-    "use server";
-    const name = (await formData.get("name")) as string;
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const room = await prisma.room.create({
-      data: { name: name || "New Room", users: { connect: { id: user.id } } },
-      include: { users: true },
-    });
-    redirect(`/rooms/${room.id}`);
-  };
+  // const createRoom = async (formData: FormData) => {
+  //   "use server";
+  //   const name = (await formData.get("name")) as string;
+  //   if (!user) {
+  //     throw new Error("User not found");
+  //   }
+  //   const room = await prisma.room.create({
+  //     data: { name: name || "New Room", users: { connect: { id: user.id } } },
+
+  //   });
+  //   redirect(`/rooms/${room.id}`);
+  // };
 
   const rooms = await getRooms();
   return (
@@ -48,18 +48,7 @@ export default async function RoomsPage() {
         {rooms.map((room) => (
           <div key={room.id} className="flex gap-1 items-end">
             <h3 className="text-2xl">{room.name || room.id}</h3>
-            <div>
-              {room.users.length > 0 ? (
-                room.users.map((u) => (
-                  <div key={u.id} className="ml-2">
-                    {u.email}
-                  </div>
-                ))
-              ) : (
-                <>Empty</>
-              )}
-            </div>
-            <form action={joinRoom}>
+            <form /*action={joinRoom}*/>
               <input type="hidden" name="userId" value={user?.id} />
               <input type="hidden" name="roomId" value={room.id} />
               <button
@@ -72,7 +61,7 @@ export default async function RoomsPage() {
           </div>
         ))}
       </div>
-      <form action={createRoom}>
+      <form /*action={createRoom} */>
         <div className="flex gap-1">
           <input type="hidden" name="userId" value={user?.id} />
           <input
