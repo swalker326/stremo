@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "db";
-import { SettingsSchema } from "~/app/servers/[serverId]/settings/page";
+import { SettingsSchema } from "~/app/_components/server/SettingsForm";
 
 export async function getServersDetailsById(id: string | undefined) {
   return await prisma.server.findFirst({
