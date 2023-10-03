@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} h-[calc(100vh-32px)] bg-slate-200`}>
+      <body className={`${inter.className} h-[calc(100vh-32px)] bg-gray-100`}>
         <Providers>
           {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           <div className="flex flex-col w-full h-screen relative">
@@ -35,9 +35,9 @@ export default function RootLayout({
               </div>
               <div>
                 <NextBreadcrumb
-                  homeElement={"Home"}
+                  homeElement={"StremO"}
                   separator={<span>/</span>}
-                  activeClasses="text-blue-700"
+                  activeClasses="text-blue-500"
                   containerClasses="flex py-5"
                   listClasses="hover:underline mx-2 font-bold"
                   capitalizeLinks
